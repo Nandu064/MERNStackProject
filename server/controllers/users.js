@@ -62,3 +62,23 @@ exports.login = async (req, res) => {
     console.log("loginUser error", error);
   }
 };
+
+exports.deleteUsers = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedUser = await UserSchema.findByIdAndDelete(id);
+    res.status(200).json({ message: "deleted user successfully" });
+  } catch (error) {
+    console.log("error: ", error);
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateUser = await UserSchema.findByIdAndUpdate(id, req.body);
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    console.log("error: ", error);
+  }
+};
