@@ -6,8 +6,8 @@ const postSchema = new mongoose.Schema({
     ref: "users",
     required: true,
   },
-  title: { type: String, required: true },
   post_content: { type: String, required: true },
+  tags: { type: String },
   likes: { type: Number, default: 0 },
   dislikes: { type: Number, default: 0 },
   comments: [

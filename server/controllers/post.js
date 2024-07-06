@@ -4,13 +4,26 @@ const PostSchema = require("../models/post");
 const UserSchema = require("../models/user");
 
 exports.addPost = async (req, res) => {
-  const newPost = new PostSchema(req.body).save();
-  res.status(200).json({ message: "Post added successfully" });
+  try {
+    console.log("req.body: ", req.body);
+    const newPost = new PostSchema(req.body).save();
+    res.status(200).json({ message: "Post added successfully" });
+  } catch (error) {
+    console.log("addpost error: ", error);
+  }
 };
 
 exports.getAllPosts = async (req, res) => {
-  const { id } = req.params;
-  const posts = await PostSchema.find({ user_id: id });
+  const posts = await PostSchema.find().populate({
+    path: "user_id",
+    select: "-password",
+  });
+  res.status(200).json(posts);
+};
+exports.getPost = async (req, res) => {
+  const { post_id } = req.params;
+
+  const posts = await PostSchema.findOne({ _id: post_id });
   res.status(200).json(posts);
 };
 exports.editPost = async (req, res) => {
@@ -28,7 +41,7 @@ exports.deletePost = async (req, res) => {
 exports.addComment = async (req, res) => {
   const { postId } = req.params;
   try {
-    const post = await PostSchema.findById({ _id: postId });
+    const post = await PostSchema.findById({});
     post.comments.push(req.body);
     await post.save();
     res.status(200).json({ message: "Commented successfully" });

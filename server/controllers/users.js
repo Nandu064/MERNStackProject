@@ -6,14 +6,14 @@ const bcrypt = require("bcrypt");
 const salt = process.env.password_salt;
 
 exports.addUsers = async (req, res) => {
-  const { username, password, name, email } = req.body;
+  console.log("req.body: ", req.body);
+  const { username, password, email } = req.body;
   let data = {
     username,
-    name,
     email,
     password,
   };
-  bcrypt.hash(password, salt, async function (err, hash) {
+  bcrypt.hash(req.body.password, salt, async function (err, hash) {
     if (!err) {
       data.password = hash;
       const existingUser = await UserSchema.find({ username });
@@ -40,7 +40,9 @@ exports.getUserById = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log("username: ", username.trim());
     const existingUser = await UserSchema.find({ username });
+    console.log("existingUser: ", existingUser);
     if (!(existingUser.length > 0)) {
       res.status(404).json({ message: "User not found" });
     } else {
