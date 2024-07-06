@@ -5,6 +5,7 @@ const UserSchema = require("../models/user");
 const bcrypt = require("bcrypt");
 const Follow = require("../models/follow");
 const Post = require("../models/post");
+const mongoose = require("mongoose");
 const salt = process.env.password_salt;
 
 exports.addUsers = async (req, res) => {
@@ -88,7 +89,7 @@ exports.updateUser = async (req, res) => {
 };
 exports.getProfile = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = new mongoose.Types.ObjectId(req.params.userId);
 
     const user = await UserSchema.findById(userId);
     if (!user) {
