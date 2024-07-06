@@ -6,4 +6,5 @@ router.post("/add-user", Users.addUsers);
 router.post("/login", Users.login);
 router.delete("/delete/:id", Users.deleteUsers);
 router.put("/update/:id", Users.updateUser);
+router.get("/profile/:userId", Users.getProfile);
 module.exports = router;

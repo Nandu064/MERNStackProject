@@ -3,6 +3,8 @@ const router = express.Router();
 const UserSchema = require("../models/user");
 
 const bcrypt = require("bcrypt");
+const Follow = require("../models/follow");
+const Post = require("../models/post");
 const salt = process.env.password_salt;
 
 exports.addUsers = async (req, res) => {
@@ -82,5 +84,30 @@ exports.updateUser = async (req, res) => {
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
     console.log("error: ", error);
+  }
+};
+exports.getProfile = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const user = await UserSchema.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const followersCount = await Follow.countDocuments({ followee: userId });
+    const followingCount = await Follow.countDocuments({ follower: userId });
+    const postsCount = await Post.countDocuments({ user_id: userId });
+
+    const userInfo = {
+      username: user.username,
+      followers: followersCount,
+      following: followingCount,
+      totalPosts: postsCount,
+    };
+
+    res.status(200).json(userInfo);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
